@@ -1,8 +1,6 @@
 # Darkex 404 · "Assembly"
 
-![preview](preview.png)
-
-One file: `404.html`. The Darkex mark rebuilt from ~45,000 GPU-simulated
+The deliverable is `404.html`. The Darkex mark rebuilt from ~45,000 GPU-simulated
 grains — it assembles out of a drifting cloud on load, scatters into embers
 under the visitor's cursor, and springs back home. No dependencies, no build
 step, no network requests; it runs from any web server or straight off disk
@@ -35,6 +33,8 @@ surfaces are marked with numbered banner comments:
 3. **Logo** — the SVG inside `<template id="logo-source">`. Paste any SVG;
    grains are sampled from its *light* pixels (line-work), so artwork should
    read light-on-dark. The favicon is derived from it automatically.
+   (`logo.svg` in this zip is the same artwork as a standalone asset for
+   design tools — the page never reads it, so a logo swap goes in the HTML.)
 4. **Motion & feel** — the `window.DARKEX404` block. Every dial is commented
    with what raising it does. The shipped values are the reference tuning.
 
