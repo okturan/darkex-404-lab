@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#09090a" />
+    <title>Darkex · The 404 Lab</title>
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="stylesheet" href="./gallery.css" />
+  </head>
+  <body>
+    <header>
+      <img class="mark" src="./logo.svg" alt="Darkex" width="44" height="41" />
+      <div>
+        <p class="eyebrow">Darkex · particle studies</p>
+        <h1>The 404 Lab</h1>
+        <p class="sub">
+          Five takes on a page that isn't there. Each one is a single TSL compute pass —
+          three.js r185, WebGPU with a WebGL2 fallback — pushing tens of thousands of grains
+          under your cursor.
+        </p>
+      </div>
+    </header>
+
+    <main class="grid">
+      <a class="card" href="./demos/ember">
+        <img src="./assets/thumbs/ember.png" alt="The Darkex mark drawn in white grains" width="1200" height="750" loading="lazy" />
+        <div class="body">
+          <h2>Assembly <span class="chip">elegant</span></h2>
+          <p>The mark gathers itself out of drifting dust; your cursor scatters embers through the line-work.</p>
+        </div>
+      </a>
+
+      <a class="card" href="./demos/morph">
+        <img src="./assets/thumbs/morph.png" alt="Grains mid-flight between the mark and 404 glyphs" width="1200" height="750" loading="lazy" />
+        <div class="body">
+          <h2>Inevitable <span class="chip">kinetic type</span></h2>
+          <p>One population of grains, two homes: the mark and the error trade places forever — interfere mid-flight.</p>
+        </div>
+      </a>
+
+      <a class="card" href="./demos/hollow">
+        <img src="./assets/thumbs/hollow.png" alt="404 carved as a void out of a field of dust" width="1200" height="750" loading="lazy" />
+        <div class="body">
+          <h2>Negative Space <span class="chip">atmospheric</span></h2>
+          <p>A slab of fog with the error carved out of it. Stir all you like — the absence stays.</p>
+        </div>
+      </a>
+
+      <a class="card" href="./demos/sandfall">
+        <img src="./assets/thumbs/sandfall.png" alt="The mark crumbling into falling sand" width="1200" height="750" loading="lazy" />
+        <div class="body">
+          <h2>Crumble <span class="chip">physics toy</span></h2>
+          <p>Brush the mark and it comes apart into falling sand, piles up, then hauls itself back together.</p>
+        </div>
+      </a>
+
+      <a class="card" href="./demos/horizon">
+        <img src="./assets/thumbs/horizon.png" alt="An orange accretion disk around a dark void" width="1200" height="750" loading="lazy" />
+        <div class="body">
+          <h2>Event Horizon <span class="chip">cosmic</span></h2>
+          <p>An accretion disk feeds the hole where the page used to be. The cursor is a second gravity well.</p>
+        </div>
+      </a>
+    </main>
+
+    <footer>
+      Grain simulation on the GPU · storage buffers + one compute pass per demo ·
+      <a href="https://www.darkex.com/en">darkex.com</a>
+    </footer>
+  </body>
+</html>

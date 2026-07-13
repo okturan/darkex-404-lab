@@ -1,0 +1,13 @@
+{
+  "name": "darkex-404-lab",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun ./index.html ./demos/ember/index.html ./demos/morph/index.html ./demos/hollow/index.html ./demos/sandfall/index.html ./demos/horizon/index.html",
+    "build": "rm -rf docs && bun build ./index.html ./demos/ember/index.html ./demos/morph/index.html ./demos/hollow/index.html ./demos/sandfall/index.html ./demos/horizon/index.html --outdir docs --minify && touch docs/.nojekyll",
+    "build:single": "bun run build-single.js"
+  },
+  "dependencies": {
+    "three": "0.185.1"
+  }
+}
