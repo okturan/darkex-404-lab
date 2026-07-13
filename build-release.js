@@ -10,7 +10,7 @@
  * Output: release/dist/{404.html, README.md, preview.png}
  *         release/darkex-404-v<version>.zip
  */
-const VERSION = '1.0.2';
+const VERSION = '1.1.0';
 
 const bundle = await Bun.build({
   entrypoints: ['./release/engine.js'],
@@ -30,8 +30,7 @@ if (spliced !== 1) throw new Error('template drifted: @ENGINE marker not found')
 
 await Bun.write('./release/dist/404.html', html);
 await Bun.write('./release/dist/README.md', Bun.file('./release/README.md'));
-// Reference copy for design tooling; the page itself reads the SVG embedded
-// in its <template>, so logo swaps happen in the HTML, not in this file.
+// Load-bearing: the page fetches this file at runtime (config logo.src).
 await Bun.write('./release/dist/logo.svg', Bun.file('./logo.svg'));
 
 const zipName = `darkex-404-v${VERSION}.zip`;

@@ -1,14 +1,25 @@
 # Darkex 404 · "Assembly"
 
-The deliverable is `404.html`. The Darkex mark rebuilt from ~45,000 GPU-simulated
-grains — it assembles out of a drifting cloud on load, scatters into embers
-under the visitor's cursor, and springs back home. No dependencies, no build
-step, no network requests; it runs from any web server or straight off disk
-(double-click it).
+Two files that travel together: **`404.html`** (the page, engine included)
+and **`logo.svg`** (the mark, fetched by the page at runtime). The Darkex
+mark rebuilt from ~45,000 GPU-simulated grains — it assembles out of a
+drifting cloud on load, scatters into embers under the visitor's cursor,
+and springs back home. No dependencies and no build step; any static server
+will do.
+
+To preview locally, serve this folder and open `/404.html` — for example
+`python3 -m http.server` → <http://localhost:8000/404.html>. (Opening the
+file straight off disk won't draw: browsers block `fetch` on `file://`, and
+the page fetches the logo.)
 
 ## Ship it
 
-Serve the file **with a 404 status**:
+Put **both files at the publish root** and serve the page **with a 404
+status**. The page references the logo by absolute path (`/logo.svg`) on
+purpose — error pages render under whatever URL failed, so a relative path
+would break on deep 404s like `/account/settings/oops`. If your assets live
+elsewhere, change `logo.src` in the config block and the favicon `<link>` in
+the head together.
 
 | Host | How |
 | --- | --- |
@@ -30,11 +41,9 @@ surfaces are marked with numbered banner comments:
 2. **Colors** — the `:root` CSS variables. The engine reads them too:
    `--fg` tints resting grains, `--brand` tints disturbed ones,
    `--scene-glow`/`--scene-edge` paint the backdrop. Retheme in one place.
-3. **Logo** — the SVG inside `<template id="logo-source">`. Paste any SVG;
-   grains are sampled from its *light* pixels (line-work), so artwork should
-   read light-on-dark. The favicon is derived from it automatically.
-   (`logo.svg` in this zip is the same artwork as a standalone asset for
-   design tools — the page never reads it, so a logo swap goes in the HTML.)
+3. **Logo** — replace `logo.svg` with any SVG; no HTML edit needed. Grains
+   are sampled from its *light* pixels (line-work), so artwork should read
+   light-on-dark. The favicon points at the same file.
 4. **Motion & feel** — the `window.DARKEX404` block. Every dial is commented
    with what raising it does. The shipped values are the reference tuning.
 
@@ -42,8 +51,9 @@ Nothing below the `ENGINE — GENERATED` banner should be edited.
 
 ## Practicalities
 
-- **Weight**: ~900 KB raw, ~230 KB over the wire with gzip/brotli (any CDN
+- **Weight**: ~880 KB raw, ~230 KB over the wire with gzip/brotli (any CDN
   or sane server config does this) — the whole of three.js rides inside.
+  The only runtime request is the logo.
 - **Browsers**: any 2025+ evergreen. WebGPU where present (Chrome, Edge,
   Safari 26+, Firefox 141+); everywhere else the renderer transparently
   falls back to WebGL2 with the identical look.

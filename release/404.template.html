@@ -8,16 +8,19 @@
     grains assemble from a drifting cloud into the logo; the visitor's cursor
     carries a force field that scatters them into embers, and every grain
     springs back home. three.js r185 — WebGPU where available, WebGL2
-    otherwise, one code path. Works from any server or straight off disk.
+    otherwise, one code path. Serve it over HTTP with logo.svg beside it at
+    the site root (fetch is blocked on file://, so opening straight off disk
+    won't draw).
 
     EVERYTHING YOU'D WANT TO EDIT IS IN THE TOP HALF OF THIS FILE:
 
       1. COPY    → inside <main class="content">          (plain HTML)
       2. COLORS  → the :root variables in <style>          (plain CSS)
-      3. LOGO    → the SVG inside <template id="logo-source">
-                   Swap in any SVG. Grains are sampled from its LIGHT pixels
-                   (line-work), so keep artwork light-on-transparent/dark.
-                   The favicon derives from the same SVG automatically.
+      3. LOGO    → the logo.svg file next to this page.
+                   Replace the file with any SVG. Grains are sampled from
+                   its LIGHT pixels (line-work), so keep artwork
+                   light-on-transparent/dark. The favicon <link> below and
+                   the sampler (logo.src in the config) both point at it.
       4. MOTION  → the window.DARKEX404 block               (plain JS)
                    Every value is commented with what raising it does.
 
@@ -35,6 +38,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#09090a" />
     <title>404 · Darkex</title>
+    <!-- Absolute path on purpose: error pages render under the URL that
+         failed, so "./logo.svg" would resolve into that dead path. -->
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
 
     <style>
       /* ——— 2. COLORS — the only place color exists. The particle engine
@@ -141,18 +147,6 @@
     </style>
   </head>
   <body>
-    <!-- ——— 3. LOGO — swap this SVG for any light-on-dark artwork.
-             It is never rendered directly: the engine rasterizes it once
-             and turns every light pixel into one grain. ——— -->
-    <template id="logo-source">
-      <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M57.6699 44.4808L47.8294 54.326H11.7477L1.90723 44.4808L10.1076 10.0223L18.4465 1.81787H41.1306L49.4695 10.0223L57.6699 44.4808Z" fill="#09090A"/>
-        <path d="M41.8021 0.178467L50.9554 9.18428L59.477 44.992L48.5088 55.9655H11.0686L0.100586 44.992L8.62203 9.18428L17.7755 0.178467H41.8021ZM11.5935 10.8603L3.7142 43.9694L12.4271 52.6866H47.1505L55.8632 43.9694L47.9839 10.8603L40.4596 3.4573H19.1178L11.5935 10.8603Z" fill="#FAFBFC"/>
-        <path d="M15.0273 36.2764H18.3075L24.8678 29.7129H15.0273V36.2764Z" fill="#FAFBFC"/>
-        <path d="M44.5487 29.7132V37.9176L34.7082 47.7629H29.8026L29.788 41.1994H33.0517L33.0681 39.5585H26.5078V37.9176H31.4281V36.2767L28.1479 32.995V21.5088H31.4281V26.4314L34.7082 29.7132H44.5487Z" fill="#FAFBFC"/>
-      </svg>
-    </template>
-
     <div id="scene" aria-hidden="true"></div>
 
     <!-- ——— 1. COPY — edit freely; it renders even before (or without) JS. ——— -->
@@ -176,6 +170,7 @@
         },
 
         logo: {
+          src: '/logo.svg', // where the mark lives. Absolute on purpose: error pages render under the *failing* URL, so a relative path would break on deep 404s. Point it at your asset host if the file lives elsewhere
           rasterWidth: 480, // sampling resolution. Grain count grows with its square: 480 ≈ 45k grains. Raise for denser line-work, lower for a lighter page
           scatter: { x: 4.5, y: 2.8, z: 1.6 }, // how wide the pre-assembly cloud starts; bigger = grander entrance
         },

@@ -2,8 +2,8 @@
  * The release engine: everything below the fold of 404.html.
  *
  * It reads the page it lives in — copy stays untouched DOM, colors come
- * from the :root CSS variables, the mark comes from <template
- * id="logo-source">, and the feel comes from window.DARKEX404. Those four
+ * from the :root CSS variables, the mark comes from the SVG file at
+ * config.logo.src, and the feel comes from window.DARKEX404. Those four
  * surfaces are the whole public API; this bundle never needs editing.
  */
 import { Clock, Color } from 'three/webgpu';
@@ -14,17 +14,11 @@ import { createParticles } from '../lib/assembly.js';
 
 const config = window.DARKEX404;
 
-// The mark: whatever SVG the designer left in the template. A data URI has
-// no path to break and never taints the sampling canvas — even from file://.
-const artwork = document.querySelector('#logo-source').content.firstElementChild;
-const logoUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(artwork))}`;
-
-// The favicon is derived from the same artwork, never duplicated.
-const icon = document.createElement('link');
-icon.rel = 'icon';
-icon.type = 'image/svg+xml';
-icon.href = logoUrl;
-document.head.append(icon);
+// The mark is fetched as text and re-issued as a data URI: sampling then
+// stays origin-clean even if logo.src ever points at a CDN, and the SVG is
+// read exactly once.
+const svg = await (await fetch(config.logo.src)).text();
+const logoUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 
 // Colors: the stylesheet is the single source of truth.
 const css = getComputedStyle(document.documentElement);
