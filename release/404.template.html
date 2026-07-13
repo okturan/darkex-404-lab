@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <!--
+    ═══════════════════════════════════════════════════════════════════════
+    DARKEX 404 · "Assembly"
+
+    The brand mark, rebuilt out of ~45,000 GPU-simulated grains. On load the
+    grains assemble from a drifting cloud into the logo; the visitor's cursor
+    carries a force field that scatters them into embers, and every grain
+    springs back home. three.js r185 — WebGPU where available, WebGL2
+    otherwise, one code path. Works from any server or straight off disk.
+
+    EVERYTHING YOU'D WANT TO EDIT IS IN THE TOP HALF OF THIS FILE:
+
+      1. COPY    → inside <main class="content">          (plain HTML)
+      2. COLORS  → the :root variables in <style>          (plain CSS)
+      3. LOGO    → the SVG inside <template id="logo-source">
+                   Swap in any SVG. Grains are sampled from its LIGHT pixels
+                   (line-work), so keep artwork light-on-transparent/dark.
+                   The favicon derives from the same SVG automatically.
+      4. MOTION  → the window.DARKEX404 block               (plain JS)
+                   Every value is commented with what raising it does.
+
+    The minified block at the very bottom is the engine (three.js + the
+    simulation). Don't edit it; regenerate it from the source repo if you
+    ever need to: https://github.com/okturan/darkex-404-lab
+    (bun run release — Bun is needed only for that, never for using this file)
+
+    Serve this file WITH A 404 STATUS: nginx `error_page 404`, Cloudflare
+    Pages/Netlify as `404.html`, S3/CloudFront error document, etc.
+    ═══════════════════════════════════════════════════════════════════════
+  -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#09090a" />
+    <title>404 · Darkex</title>
+
+    <style>
+      /* ——— 2. COLORS — the only place color exists. The particle engine
+             reads these same variables, so retheming the grains is a CSS
+             edit: --fg tints resting grains, --brand tints disturbed ones,
+             --scene-glow/--scene-edge paint the backdrop vignette. ——— */
+      :root {
+        --bg: #09090a; /* page base (Darkex neutral-950) */
+        --fg: #fafbfc; /* text + resting grains (neutral-50) */
+        --fg-muted: rgb(250 251 252 / 55%);
+        --brand: #ff5d15; /* CTA + disturbed "ember" grains (brand-500) */
+        --brand-bright: #ff7d37; /* CTA hover (brand-400) */
+        --scene-glow: #101014; /* vignette center behind the mark */
+        --scene-edge: #050506; /* vignette edges */
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #scene {
+        position: fixed;
+        inset: 0;
+      }
+
+      #scene canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* The copy sits in the lower third; the mark rides in the space above
+         it (see view.lift in the config). Only the CTA takes pointer events,
+         so the overlay never blocks the particle hover. */
+      .content {
+        position: relative;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        padding: 0 1.5rem 10vh;
+        text-align: center;
+        pointer-events: none;
+      }
+
+      .eyebrow {
+        margin: 0;
+        color: var(--brand);
+        font-size: 0.8125rem;
+        font-weight: 650;
+        letter-spacing: 0.35em;
+        text-indent: 0.35em; /* recenters tracked uppercase */
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5.5vw, 3.25rem);
+        font-weight: 650;
+        letter-spacing: -0.02em;
+      }
+
+      .detail {
+        margin: 0;
+        max-width: 34rem;
+        color: var(--fg-muted);
+        font-size: 1.0625rem;
+        line-height: 1.6;
+      }
+
+      .home {
+        pointer-events: auto;
+        margin-top: 1.25rem;
+        padding: 0.875rem 2rem;
+        border-radius: 0.75rem;
+        background: var(--brand);
+        color: var(--bg);
+        font-weight: 650;
+        text-decoration: none;
+        transition: background 150ms ease, translate 150ms ease;
+      }
+
+      .home:hover {
+        background: var(--brand-bright);
+        translate: 0 -2px;
+      }
+
+      ::selection {
+        background: var(--brand);
+        color: var(--bg);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ——— 3. LOGO — swap this SVG for any light-on-dark artwork.
+             It is never rendered directly: the engine rasterizes it once
+             and turns every light pixel into one grain. ——— -->
+    <template id="logo-source">
+      <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M57.6699 44.4808L47.8294 54.326H11.7477L1.90723 44.4808L10.1076 10.0223L18.4465 1.81787H41.1306L49.4695 10.0223L57.6699 44.4808Z" fill="#09090A"/>
+        <path d="M41.8021 0.178467L50.9554 9.18428L59.477 44.992L48.5088 55.9655H11.0686L0.100586 44.992L8.62203 9.18428L17.7755 0.178467H41.8021ZM11.5935 10.8603L3.7142 43.9694L12.4271 52.6866H47.1505L55.8632 43.9694L47.9839 10.8603L40.4596 3.4573H19.1178L11.5935 10.8603Z" fill="#FAFBFC"/>
+        <path d="M15.0273 36.2764H18.3075L24.8678 29.7129H15.0273V36.2764Z" fill="#FAFBFC"/>
+        <path d="M44.5487 29.7132V37.9176L34.7082 47.7629H29.8026L29.788 41.1994H33.0517L33.0681 39.5585H26.5078V37.9176H31.4281V36.2767L28.1479 32.995V21.5088H31.4281V26.4314L34.7082 29.7132H44.5487Z" fill="#FAFBFC"/>
+      </svg>
+    </template>
+
+    <div id="scene" aria-hidden="true"></div>
+
+    <!-- ——— 1. COPY — edit freely; it renders even before (or without) JS. ——— -->
+    <main class="content">
+      <p class="eyebrow">Error 404</p>
+      <h1>Lost in the dark.</h1>
+      <p class="detail">The page you're looking for was moved, delisted, or never existed.</p>
+      <a class="home" href="https://www.darkex.com/en">Back to Darkex</a>
+    </main>
+
+    <script>
+      /* ——— 4. MOTION & FEEL — the dials. Units: the assembled mark is
+             always exactly 2 "units" tall; seconds are seconds. Refresh to
+             feel a change. If motion ever misbehaves after an edit, return
+             to these defaults — they are the shipped tuning. ——— */
+      window.DARKEX404 = {
+        view: {
+          fov: 38, // camera lens; leave it — fill/lift below do the framing
+          fill: 0.34, // the mark's size: fraction of the viewport's limiting axis
+          lift: 0.55, // how far above screen center the mark floats — clears the copy
+        },
+
+        logo: {
+          rasterWidth: 480, // sampling resolution. Grain count grows with its square: 480 ≈ 45k grains. Raise for denser line-work, lower for a lighter page
+          scatter: { x: 4.5, y: 2.8, z: 1.6 }, // how wide the pre-assembly cloud starts; bigger = grander entrance
+        },
+
+        physics: {
+          stiffness: 55, // spring pull toward home. Higher = snappier heal, lower = floatier
+          drag: 5, // velocity decay. ~15 would stop dead ("critically damped"); 5 leaves a lively overshoot wobble
+          maxStep: 1 / 30, // integration ceiling (s) so background-tab jumps can't explode the spring — leave it
+          wanderStrength: 0.55, // idle shimmer force. 0 = a perfectly still mark
+          wanderSpeed: 1.4, // idle shimmer tempo
+        },
+
+        pointerField: {
+          radius: 0.8, // reach of the cursor's influence (the mark is 2 units tall)
+          shove: 30, // how hard grains are pushed out of the cursor
+          entrainment: 7, // how much grains ride along with cursor motion — the "flick" feel
+          smoothing: 14, // how tightly the field chases the real cursor; lower = dreamier lag
+        },
+
+        sprites: {
+          size: 0.009, // grain diameter. Pairs with rasterWidth: denser sampling wants smaller grains
+          opacity: 0.8,
+          heatSpeeds: [0.6, 4], // grain speeds mapped to white → ember. Lower the first number and the mark ignites at a touch
+          emberSwell: 0.8, // how much hot grains grow (fraction of base size)
+        },
+      };
+    </script>
+
+    <!-- ═════════════════════ ENGINE — GENERATED ═════════════════════
+         three.js r185 + the grain simulation, bundled and minified.
+         No user-serviceable parts. Regenerate from the repo: bun run release
+         ═══════════════════════════════════════════════════════════════ -->
+    <!-- @ENGINE -->
+  </body>
+</html>

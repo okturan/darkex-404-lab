@@ -4,15 +4,15 @@ import { logoUrl } from '../../lib/logo.js';
 import { sampleImage, scatter } from '../../lib/points.js';
 import { createStage } from '../../lib/stage.js';
 import { createPointer } from '../../lib/pointer.js';
-import { createParticles } from './particles.js';
-import { logo, pointerField, view } from './config.js';
+import { createParticles } from '../../lib/assembly.js';
+import { logo, palette, physics, pointerField, sprites, view } from './config.js';
 
 const mark = await sampleImage(logoUrl, logo);
 const field = { ...mark, starts: scatter(mark.count, logo.scatter) };
 
 const stage = createStage(document.querySelector('#scene'), mark.size, view);
 const pointer = createPointer(stage.camera, pointerField.smoothing);
-const particles = createParticles(field, pointer);
+const particles = createParticles(field, pointer, { physics, pointerField, sprites, palette });
 
 stage.scene.add(particles.sprite);
 await stage.renderer.init();

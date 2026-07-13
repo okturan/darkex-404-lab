@@ -17,6 +17,17 @@ projected onto the grains' plane. three.js r185, `three/webgpu` +
 | [Crumble](https://okturan.github.io/darkex-404-lab/demos/sandfall/) | physics toy | Touch melts the mark into falling sand — piles up, then the spring hauls every grain home. |
 | [Event Horizon](https://okturan.github.io/darkex-404-lab/demos/horizon/) | cosmic | An accretion disk feeds the hole where the page used to be; the cursor is a second gravity well. |
 
+## Release (the production artifact)
+
+Assembly is the production pick. `bun run release` emits
+`release/darkex-404-v1.0.0.zip` — a single self-contained `404.html`
+(plus handoff README and preview) that needs **no build tools and no Bun**
+to use or edit. Copy lives in HTML, colors live in CSS variables the engine
+reads at boot, the logo lives in a `<template>` (swap the SVG, favicon
+follows), and the feel lives in one commented `window.DARKEX404` block.
+The template is `release/404.template.html`; the engine source is
+`release/engine.js`.
+
 ## Run
 
 ```sh
@@ -24,6 +35,7 @@ bun install
 bun run dev            # gallery + all demos with HMR → http://localhost:3000
 bun run build          # static site → docs/ (what GitHub Pages serves)
 bun run build:single   # the Assembly demo as one self-contained file → dist/404.html
+bun run release        # designer-facing release zip → release/darkex-404-v*.zip
 ```
 
 Opening source HTML from `file://` shows nothing by design — the pages import
