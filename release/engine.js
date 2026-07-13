@@ -15,6 +15,15 @@ import { createParticles } from '../lib/assembly.js';
 
 const config = window.DARKEX404;
 
+// Copy overrides: a set field replaces the markup's text, an empty one
+// leaves the markup — the no-JS/crawler version — as-is.
+const override = (selector, text) => text && (document.querySelector(selector).textContent = text);
+override('.eyebrow', config.copy.eyebrow);
+override('h1', config.copy.headline);
+override('.detail', config.copy.detail);
+override('.home', config.copy.ctaLabel);
+if (config.copy.ctaHref) document.querySelector('.home').href = config.copy.ctaHref;
+
 // The mark: the SVG embedded in the page, unless logo.src points at a
 // hosted copy — then the URL wins. Either way it is re-issued as a data URI,
 // which keeps sampling origin-clean (even for CDN sources) and lets the

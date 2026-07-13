@@ -12,23 +12,27 @@
     any server, any path depth, or straight off disk — nothing to upload
     beside it.
 
-    EVERYTHING YOU'D WANT TO EDIT IS IN THE TOP HALF OF THIS FILE:
+    EVERYTHING YOU'D WANT TO EDIT IS AT THE TOP OF THIS FILE:
 
-      1. COPY    → inside <main class="content">          (plain HTML)
-      2. COLORS  → the :root variables in <style>          (plain CSS)
-      3. LOGO    → the SVG inside <template id="logo-source">.
-                   Swap in any SVG. Grains are sampled from its LIGHT
-                   pixels (line-work), so keep artwork light-on-dark.
-                   The favicon derives from it automatically. Prefer a
-                   hosted file (CDN, asset pipeline)? Set logo.src in the
-                   config instead — a URL there wins over the embed.
-      4. MOTION  → the window.DARKEX404 block               (plain JS)
-                   Every value is commented with what raising it does.
+      1. COLORS & TYPE SIZES → the :root variables in <style>   (plain CSS)
+      2. COPY & MOTION       → the window.DARKEX404 block right below the
+                               styles. copy.* fields override the text
+                               written in the markup; leave a field '' to
+                               keep the markup's version (which is also
+                               what no-JS visitors and crawlers see).
+                               Every motion value is commented with what
+                               raising it does.
+      3. LOGO                → the SVG inside <template id="logo-source">.
+                               Swap in any SVG. Grains are sampled from its
+                               LIGHT pixels (line-work), so keep artwork
+                               light-on-dark. The favicon derives from it
+                               automatically. Prefer a hosted file (CDN,
+                               asset pipeline)? Set logo.src in the config
+                               — a URL there wins over the embed.
 
     The minified block at the very bottom is the engine (three.js + the
-    simulation). Don't edit it; regenerate it from the source repo if you
-    ever need to: https://github.com/okturan/darkex-404-lab
-    (bun run release — Bun is needed only for that, never for using this file)
+    simulation). Don't edit it; if it ever needs regenerating, the source
+    lives at https://github.com/okturan/darkex-404-lab
 
     Serve this file WITH A 404 STATUS: nginx `error_page 404`, Cloudflare
     Pages/Netlify as `404.html`, S3/CloudFront error document, etc.
@@ -42,10 +46,11 @@
     <!-- No favicon link here: the engine derives it from the logo below. -->
 
     <style>
-      /* ——— 2. COLORS — the only place color exists. The particle engine
-             reads these same variables, so retheming the grains is a CSS
-             edit: --fg tints resting grains, --brand tints disturbed ones,
-             --scene-glow/--scene-edge paint the backdrop vignette. ——— */
+      /* ——— 1. COLORS & TYPE SIZES — the only place they exist. The
+             particle engine reads the color variables too, so retheming
+             the grains is a CSS edit: --fg tints resting grains, --brand
+             tints disturbed ones, --scene-glow/--scene-edge paint the
+             backdrop vignette. ——— */
       :root {
         --bg: #09090a; /* page base (Darkex neutral-950) */
         --fg: #fafbfc; /* text + resting grains (neutral-50) */
@@ -54,6 +59,10 @@
         --brand-bright: #ff7d37; /* CTA hover (brand-400) */
         --scene-glow: #101014; /* vignette center behind the mark */
         --scene-edge: #050506; /* vignette edges */
+
+        --type-404: 1.125rem; /* the small "404" above the headline */
+        --type-headline: clamp(2rem, 5.5vw, 3.25rem);
+        --type-detail: 1.0625rem;
       }
 
       * {
@@ -100,7 +109,7 @@
       .eyebrow {
         margin: 0;
         color: var(--brand);
-        font-size: 1.125rem;
+        font-size: var(--type-404);
         font-weight: 650;
         letter-spacing: 0.35em;
         text-indent: 0.35em; /* recenters tracked uppercase */
@@ -109,7 +118,7 @@
 
       h1 {
         margin: 0;
-        font-size: clamp(2rem, 5.5vw, 3.25rem);
+        font-size: var(--type-headline);
         font-weight: 650;
         letter-spacing: -0.02em;
       }
@@ -118,7 +127,7 @@
         margin: 0;
         max-width: 34rem;
         color: var(--fg-muted);
-        font-size: 1.0625rem;
+        font-size: var(--type-detail);
         line-height: 1.6;
       }
 
@@ -144,37 +153,27 @@
         color: var(--bg);
       }
     </style>
-  </head>
-  <body>
-    <!-- ——— 3. LOGO — the mark itself. Swap this SVG for any light-on-dark
-             artwork; it is rasterized once into grains and becomes the
-             favicon. (Set logo.src in the config to use a hosted file
-             instead — the URL wins over this embed.) ——— -->
-    <template id="logo-source">
-      <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M57.6699 44.4808L47.8294 54.326H11.7477L1.90723 44.4808L10.1076 10.0223L18.4465 1.81787H41.1306L49.4695 10.0223L57.6699 44.4808Z" fill="#09090A"/>
-        <path d="M41.8021 0.178467L50.9554 9.18428L59.477 44.992L48.5088 55.9655H11.0686L0.100586 44.992L8.62203 9.18428L17.7755 0.178467H41.8021ZM11.5935 10.8603L3.7142 43.9694L12.4271 52.6866H47.1505L55.8632 43.9694L47.9839 10.8603L40.4596 3.4573H19.1178L11.5935 10.8603Z" fill="#FAFBFC"/>
-        <path d="M15.0273 36.2764H18.3075L24.8678 29.7129H15.0273V36.2764Z" fill="#FAFBFC"/>
-        <path d="M44.5487 29.7132V37.9176L34.7082 47.7629H29.8026L29.788 41.1994H33.0517L33.0681 39.5585H26.5078V37.9176H31.4281V36.2767L28.1479 32.995V21.5088H31.4281V26.4314L34.7082 29.7132H44.5487Z" fill="#FAFBFC"/>
-      </svg>
-    </template>
-
-    <div id="scene" aria-hidden="true"></div>
-
-    <!-- ——— 1. COPY — edit freely; it renders even before (or without) JS. ——— -->
-    <main class="content">
-      <p class="eyebrow">404</p>
-      <h1>Lost in the dark.</h1>
-      <p class="detail">The page you're looking for was moved, delisted, or never existed.</p>
-      <a class="home" href="https://www.darkex.com/en">Back to Darkex</a>
-    </main>
 
     <script>
-      /* ——— 4. MOTION & FEEL — the dials. Units: the assembled mark is
-             always exactly 2 "units" tall; seconds are seconds. Refresh to
-             feel a change. If motion ever misbehaves after an edit, return
-             to these defaults — they are the shipped tuning. ——— */
+      /* ——— 2. COPY & MOTION — every setting in one object.
+
+             copy.* overrides the text written in the markup below; leave a
+             field '' to keep the markup's version (which is also what
+             crawlers and no-JS visitors read).
+
+             Motion units: the assembled mark is always exactly 2 "units"
+             tall; seconds are seconds. Refresh to feel a change. If motion
+             ever misbehaves after an edit, return to these defaults — they
+             are the shipped tuning. ——— */
       window.DARKEX404 = {
+        copy: {
+          eyebrow: '', // the small brand-colored line, "404" in the markup
+          headline: '', // "Lost in the dark."
+          detail: '', // the explainer sentence
+          ctaLabel: '', // "Back to Darkex"
+          ctaHref: '', // the CTA destination URL
+        },
+
         view: {
           fov: 38, // camera lens; leave it — fill/lift below do the framing
           fill: 0.34, // the mark's size: fraction of the viewport's limiting axis
@@ -182,7 +181,7 @@
         },
 
         logo: {
-          src: '', // optional: URL of a hosted SVG to use instead of the embedded one — e.g. '/logo.svg' or a CDN URL (absolute URLs are safest: error pages render under the failing URL, and cross-origin hosts must allow CORS reads). Empty = the SVG embedded above
+          src: '', // optional: URL of a hosted SVG to use instead of the embedded one — e.g. '/logo.svg' or a CDN URL (absolute URLs are safest: error pages render under the failing URL, and cross-origin hosts must allow CORS reads). Empty = the SVG embedded in the body
           rasterWidth: 480, // sampling resolution. Grain count grows with its square: 480 ≈ 45k grains. Raise for denser line-work, lower for a lighter page
           scatter: { x: 4.5, y: 2.8, z: 1.6 }, // how wide the pre-assembly cloud starts; bigger = grander entrance
         },
@@ -210,10 +209,38 @@
         },
       };
     </script>
+  </head>
+  <body>
+    <!-- ——— 3. LOGO — the mark itself. Swap this SVG for any light-on-dark
+             artwork; it is rasterized once into grains and becomes the
+             favicon. (Set logo.src in the config to use a hosted file
+             instead — the URL wins over this embed.) ——— -->
+    <template id="logo-source">
+      <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M57.6699 44.4808L47.8294 54.326H11.7477L1.90723 44.4808L10.1076 10.0223L18.4465 1.81787H41.1306L49.4695 10.0223L57.6699 44.4808Z" fill="#09090A"/>
+        <path d="M41.8021 0.178467L50.9554 9.18428L59.477 44.992L48.5088 55.9655H11.0686L0.100586 44.992L8.62203 9.18428L17.7755 0.178467H41.8021ZM11.5935 10.8603L3.7142 43.9694L12.4271 52.6866H47.1505L55.8632 43.9694L47.9839 10.8603L40.4596 3.4573H19.1178L11.5935 10.8603Z" fill="#FAFBFC"/>
+        <path d="M15.0273 36.2764H18.3075L24.8678 29.7129H15.0273V36.2764Z" fill="#FAFBFC"/>
+        <path d="M44.5487 29.7132V37.9176L34.7082 47.7629H29.8026L29.788 41.1994H33.0517L33.0681 39.5585H26.5078V37.9176H31.4281V36.2767L28.1479 32.995V21.5088H31.4281V26.4314L34.7082 29.7132H44.5487Z" fill="#FAFBFC"/>
+      </svg>
+    </template>
+
+    <div id="scene" aria-hidden="true"></div>
+
+    <!-- DEFAULT COPY — what crawlers and no-JS visitors read. Edit here, or
+         leave it and override per-field via DARKEX404.copy in the head. -->
+    <main class="content">
+      <p class="eyebrow">404</p>
+      <h1>Lost in the dark.</h1>
+      <p class="detail">The page you're looking for was moved, delisted, or never existed.</p>
+      <a class="home" href="https://www.darkex.com/en">Back to Darkex</a>
+    </main>
 
     <!-- ═════════════════════ ENGINE — GENERATED ═════════════════════
-         three.js r185 + the grain simulation, bundled and minified.
-         No user-serviceable parts. Regenerate from the repo: bun run release
+         three.js r185 + the grain simulation, bundled and minified into
+         the page so it has zero external dependencies — an error page
+         shouldn't come with its own failure modes. Nothing below ever
+         needs editing; the sections above are the whole interface.
+         Source: https://github.com/okturan/darkex-404-lab
          ═══════════════════════════════════════════════════════════════ -->
     <!-- @ENGINE -->
   </body>
