@@ -1,44 +1,47 @@
 /**
- * Assembles the designer-facing release zip.
+ * Assembles the designer-facing release zips:
  *
- * release/404.template.html holds every human-editable surface — copy,
- * color tokens, the mark, the motion config — and a single marker where
- * this script splices the minified engine (three.js + the simulation,
- * bundled from release/engine.js). Recipients of the zip never run this;
- * it exists to regenerate the engine when three.js or the sim changes.
+ *   darkex-404-v<version>.zip   — the full 404 page (404.html + README + logo.svg)
+ *   darkex-mark-v<version>.zip  — just the interactive mark (mark.html + README + logo.svg)
  *
- * Output: release/dist/{404.html, README.md, preview.png}
- *         release/darkex-404-v<version>.zip
+ * Each template holds every human-editable surface and one marker where
+ * this script splices its minified engine. Recipients of the zips never run
+ * this; it exists to regenerate the engines when three.js or the simulation
+ * changes.
  */
-const VERSION = '1.3.1';
+const VERSION = '1.4.0';
 
-const bundle = await Bun.build({
-  entrypoints: ['./release/engine.js'],
-  target: 'browser',
-  minify: true,
-});
-
-const js = (await bundle.outputs[0].text())
+async function bundle(entry) {
+  const build = await Bun.build({ entrypoints: [entry], target: 'browser', minify: true });
   // A literal `</script` would end the inline tag mid-bundle; the sequence
   // can only occur inside a JS string, where this escape is behavior-preserving.
-  .replaceAll('</script', '<\\/script');
+  return (await build.outputs[0].text()).replaceAll('</script', '<\\/script');
+}
 
-let spliced = 0;
-const html = (await Bun.file('./release/404.template.html').text())
-  .replace('<!-- @ENGINE -->', () => (spliced++, `<script type="module">\n${js}\n</script>`));
-if (spliced !== 1) throw new Error('template drifted: @ENGINE marker not found');
+async function splice(template, js, out) {
+  let markers = 0;
+  const html = (await Bun.file(template).text())
+    .replace('<!-- @ENGINE -->', () => (markers++, `<script type="module">\n${js}\n</script>`));
+  if (markers !== 1) throw new Error(`${template}: @ENGINE marker not found`);
+  await Bun.write(out, html);
+  return html.length;
+}
 
-await Bun.write('./release/dist/404.html', html);
-await Bun.write('./release/dist/README.md', Bun.file('./release/README.md'));
-// Reference copy for design tooling; the page reads its embedded SVG
+async function pack(name, files) {
+  Bun.spawnSync(['zip', '-X', '-j', '-q', name, ...files], { cwd: './release' });
+  console.log(`release/${name} — ${(Bun.file(`./release/${name}`).size / 1024).toFixed(0)} KB`);
+}
+
+// The 404 page.
+await splice('./release/404.template.html', await bundle('./release/engine.js'), './release/dist/404/404.html');
+await Bun.write('./release/dist/404/README.md', Bun.file('./release/README.md'));
+// Reference copies for design tooling; the pages read their embedded SVGs
 // unless config logo.src points at a hosted file.
-await Bun.write('./release/dist/logo.svg', Bun.file('./logo.svg'));
+await Bun.write('./release/dist/404/logo.svg', Bun.file('./logo.svg'));
+await pack(`darkex-404-v${VERSION}.zip`, ['dist/404/404.html', 'dist/404/README.md', 'dist/404/logo.svg']);
 
-const zipName = `darkex-404-v${VERSION}.zip`;
-Bun.spawnSync(['zip', '-X', '-j', '-q', zipName, 'dist/404.html', 'dist/README.md', 'dist/logo.svg'], {
-  cwd: './release',
-});
-
-const size = (n) => `${(n / 1024).toFixed(0)} KB`;
-console.log(`release/dist/404.html — ${size(html.length)}`);
-console.log(`release/${zipName} — ${size(Bun.file(`./release/${zipName}`).size)}`);
+// The bare mark.
+await splice('./release/mark.template.html', await bundle('./release/engine-embed.js'), './release/dist/mark/mark.html');
+await Bun.write('./release/dist/mark/README.md', Bun.file('./release/README-mark.md'));
+await Bun.write('./release/dist/mark/logo.svg', Bun.file('./logo.svg'));
+await pack(`darkex-mark-v${VERSION}.zip`, ['dist/mark/mark.html', 'dist/mark/README.md', 'dist/mark/logo.svg']);

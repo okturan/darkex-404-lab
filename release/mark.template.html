@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <!--
+    ═══════════════════════════════════════════════════════════════════════
+    DARKEX MARK · interactive brand particle
+
+    Just the mark, nothing else: ~45,000 GPU-simulated grains assemble into
+    the Darkex logo, scatter into embers under the cursor, and spring back
+    home. No copy, no buttons — a full-viewport canvas to use as-is, drop
+    into an <iframe>, or build a page around. three.js r185 — WebGPU where
+    available, WebGL2 otherwise. Self-sufficient single file: any server,
+    any path, or straight off disk.
+
+    EVERYTHING YOU'D WANT TO EDIT IS AT THE TOP OF THIS FILE:
+
+      1. COLORS → the :root variables in <style>. --fg tints resting
+                  grains, --brand tints disturbed ones, --scene-glow and
+                  --scene-edge paint the backdrop vignette.
+      2. MOTION → the window.DARKEX404 block below the styles; every value
+                  is commented with what raising it does.
+      3. LOGO   → the SVG inside <template id="logo-source">. Swap in any
+                  SVG; grains sample its LIGHT pixels (line-work), so keep
+                  artwork light-on-dark. The favicon derives from it. Or
+                  set logo.src to a hosted SVG's URL — that wins over the
+                  embed.
+
+    The minified block at the bottom is the engine (three.js + the
+    simulation) — generated, never in need of editing.
+    Source: https://github.com/okturan/darkex-404-lab
+    ═══════════════════════════════════════════════════════════════════════
+  -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#09090a" />
+    <title>Darkex · Mark</title>
+    <!-- No favicon link here: the engine derives it from the logo below. -->
+
+    <style>
+      /* ——— 1. COLORS ——— */
+      :root {
+        --bg: #09090a; /* page base (Darkex neutral-950) */
+        --fg: #fafbfc; /* resting grains (neutral-50) */
+        --brand: #ff5d15; /* disturbed "ember" grains (brand-500) */
+        --scene-glow: #101014; /* vignette center behind the mark */
+        --scene-edge: #050506; /* vignette edges */
+      }
+
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      #scene {
+        position: fixed;
+        inset: 0;
+      }
+
+      #scene canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+
+    <script>
+      /* ——— 2. MOTION — the dials. Units: the assembled mark is always
+             exactly 2 "units" tall; seconds are seconds. Refresh to feel a
+             change; these defaults are the shipped tuning. ——— */
+      window.DARKEX404 = {
+        view: {
+          fov: 38, // camera lens; leave it — fill/lift do the framing
+          fill: 0.42, // the mark's size: fraction of the viewport's limiting axis
+          lift: 0, // vertical offset in units; 0 = dead center
+        },
+
+        logo: {
+          src: '', // optional: URL of a hosted SVG to use instead of the embedded one (absolute URL; cross-origin hosts must allow CORS). Empty = the SVG embedded in the body
+          rasterWidth: 480, // sampling resolution. Grain count grows with its square: 480 ≈ 45k grains
+          scatter: { x: 4.5, y: 2.8, z: 1.6 }, // how wide the pre-assembly cloud starts
+        },
+
+        physics: {
+          stiffness: 55, // spring pull toward home. Higher = snappier heal, lower = floatier
+          drag: 5, // velocity decay. ~15 would stop dead; 5 leaves a lively overshoot wobble
+          maxStep: 1 / 30, // integration ceiling (s) — leave it
+          wanderStrength: 0.55, // idle shimmer force. 0 = a perfectly still mark
+          wanderSpeed: 1.4, // idle shimmer tempo
+        },
+
+        pointerField: {
+          radius: 0.8, // reach of the cursor's influence
+          shove: 30, // how hard grains are pushed out of the cursor
+          entrainment: 7, // how much grains ride along with cursor motion
+          smoothing: 14, // how tightly the field chases the real cursor
+        },
+
+        sprites: {
+          size: 0.009, // grain diameter
+          opacity: 0.8,
+          heatSpeeds: [0.6, 4], // grain speeds mapped to white → ember
+          emberSwell: 0.8, // how much hot grains grow
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <!-- ——— 3. LOGO — swap this SVG for any light-on-dark artwork. ——— -->
+    <template id="logo-source">
+      <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M57.6699 44.4808L47.8294 54.326H11.7477L1.90723 44.4808L10.1076 10.0223L18.4465 1.81787H41.1306L49.4695 10.0223L57.6699 44.4808Z" fill="#09090A"/>
+        <path d="M41.8021 0.178467L50.9554 9.18428L59.477 44.992L48.5088 55.9655H11.0686L0.100586 44.992L8.62203 9.18428L17.7755 0.178467H41.8021ZM11.5935 10.8603L3.7142 43.9694L12.4271 52.6866H47.1505L55.8632 43.9694L47.9839 10.8603L40.4596 3.4573H19.1178L11.5935 10.8603Z" fill="#FAFBFC"/>
+        <path d="M15.0273 36.2764H18.3075L24.8678 29.7129H15.0273V36.2764Z" fill="#FAFBFC"/>
+        <path d="M44.5487 29.7132V37.9176L34.7082 47.7629H29.8026L29.788 41.1994H33.0517L33.0681 39.5585H26.5078V37.9176H31.4281V36.2767L28.1479 32.995V21.5088H31.4281V26.4314L34.7082 29.7132H44.5487Z" fill="#FAFBFC"/>
+      </svg>
+    </template>
+
+    <div id="scene" aria-hidden="true"></div>
+
+    <!-- ═════════════════════ ENGINE — GENERATED ═════════════════════
+         three.js r185 + the grain simulation, bundled and minified into
+         the page so it has zero external dependencies. Nothing below ever
+         needs editing; the sections above are the whole interface.
+         Source: https://github.com/okturan/darkex-404-lab
+         ═══════════════════════════════════════════════════════════════ -->
+    <!-- @ENGINE -->
+  </body>
+</html>

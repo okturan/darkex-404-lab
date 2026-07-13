@@ -91,8 +91,9 @@
       }
 
       /* The copy sits in the lower third; the mark rides in the space above
-         it (see view.lift in the config). Only the CTA takes pointer events,
-         so the overlay never blocks the particle hover. */
+         it (see view.lift in the config). The cursor is tracked on window,
+         so this overlay never blocks the particle field — the copy stays
+         ordinary, selectable text. */
       .content {
         position: relative;
         min-height: 100dvh;
@@ -103,7 +104,6 @@
         gap: 0.75rem;
         padding: 0 1.5rem 10vh;
         text-align: center;
-        pointer-events: none;
       }
 
       .eyebrow {
@@ -132,7 +132,6 @@
       }
 
       .home {
-        pointer-events: auto;
         margin-top: 1.25rem;
         padding: 0.875rem 2rem;
         border-radius: 0.75rem;

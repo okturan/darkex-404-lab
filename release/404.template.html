@@ -60,7 +60,7 @@
         --scene-glow: #101014; /* vignette center behind the mark */
         --scene-edge: #050506; /* vignette edges */
 
-        --type-404: 1.125rem; /* the small "404" above the headline */
+        --type-404: 3rem; /* the "404" above the headline */
         --type-headline: clamp(2rem, 5.5vw, 3.25rem);
         --type-detail: 1.0625rem;
       }
@@ -110,10 +110,9 @@
         margin: 0;
         color: var(--brand);
         font-size: var(--type-404);
-        font-weight: 650;
-        letter-spacing: 0.35em;
-        text-indent: 0.35em; /* recenters tracked uppercase */
-        text-transform: uppercase;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-indent: 0.12em; /* recenters tracked digits */
       }
 
       h1 {
@@ -131,20 +130,29 @@
         line-height: 1.6;
       }
 
+      /* The CTA matches the button on darkex.com's own 404: 40px pill,
+         brand fill and border, white label, the mark riding inline. */
       .home {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        height: 2.5rem;
         margin-top: 1.25rem;
-        padding: 0.875rem 2rem;
+        padding: 0 1.25rem;
+        border: 1px solid var(--brand);
         border-radius: 0.75rem;
         background: var(--brand);
-        color: var(--bg);
-        font-weight: 650;
+        color: var(--fg);
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5rem;
         text-decoration: none;
-        transition: background 150ms ease, translate 150ms ease;
+        transition: background 150ms ease, border-color 150ms ease;
       }
 
       .home:hover {
         background: var(--brand-bright);
-        translate: 0 -2px;
+        border-color: var(--brand-bright);
       }
 
       ::selection {
@@ -169,7 +177,7 @@
           eyebrow: '', // the small brand-colored line, "404" in the markup
           headline: '', // "Lost in the dark."
           detail: '', // the explainer sentence
-          ctaLabel: '', // "Back to Darkex"
+          ctaLabel: '', // "Go to home"
           ctaHref: '', // the CTA destination URL
         },
 
@@ -231,7 +239,14 @@
       <p class="eyebrow">404</p>
       <h1>Lost in the dark.</h1>
       <p class="detail">The page you're looking for was moved, delisted, or never existed.</p>
-      <a class="home" href="https://www.darkex.com/en">Back to Darkex</a>
+      <a class="home" href="https://www.darkex.com/en">
+        <svg width="18" height="17" viewBox="0 0 60 56" fill="none" aria-hidden="true">
+          <path d="M41.8021 0.178467L50.9554 9.18428L59.477 44.992L48.5088 55.9655H11.0686L0.100586 44.992L8.62203 9.18428L17.7755 0.178467H41.8021ZM11.5935 10.8603L3.7142 43.9694L12.4271 52.6866H47.1505L55.8632 43.9694L47.9839 10.8603L40.4596 3.4573H19.1178L11.5935 10.8603Z" fill="currentColor"/>
+          <path d="M15.0273 36.2764H18.3075L24.8678 29.7129H15.0273V36.2764Z" fill="currentColor"/>
+          <path d="M44.5487 29.7132V37.9176L34.7082 47.7629H29.8026L29.788 41.1994H33.0517L33.0681 39.5585H26.5078V37.9176H31.4281V36.2767L28.1479 32.995V21.5088H31.4281V26.4314L34.7082 29.7132H44.5487Z" fill="currentColor"/>
+        </svg>
+        <span class="home-label">Go to home</span>
+      </a>
     </main>
 
     <!-- ═════════════════════ ENGINE — GENERATED ═════════════════════
