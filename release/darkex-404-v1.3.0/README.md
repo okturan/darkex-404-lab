@@ -22,10 +22,15 @@ The copy is plain DOM, so search engines and no-JS visitors still get a real
 Open `404.html` in any editor. The top half is yours; the four editable
 surfaces are marked with numbered banner comments:
 
-1. **Copy** — the text and CTA link, plain HTML inside `<main class="content">`.
-2. **Colors** — the `:root` CSS variables. The engine reads them too:
-   `--fg` tints resting grains, `--brand` tints disturbed ones,
-   `--scene-glow`/`--scene-edge` paint the backdrop. Retheme in one place.
+1. **Copy** — set any field in `DARKEX404.copy` (head config block):
+   `eyebrow`, `headline`, `detail`, `ctaLabel`, `ctaHref`. Fields left `''`
+   fall through to the text written in `<main class="content">`, which is
+   what crawlers and no-JS visitors read — edit there instead if you prefer
+   markup.
+2. **Colors & type sizes** — the `:root` CSS variables. The engine reads the
+   colors too: `--fg` tints resting grains, `--brand` tints disturbed ones,
+   `--scene-glow`/`--scene-edge` paint the backdrop. `--type-404`,
+   `--type-headline` and `--type-detail` size the text. Retheme in one place.
 3. **Logo** — the SVG inside `<template id="logo-source">`. Paste any SVG;
    grains are sampled from its *light* pixels (line-work), so artwork should
    read light-on-dark. The favicon derives from it automatically. Teams that
