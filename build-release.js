@@ -10,7 +10,7 @@
  * Output: release/dist/{404.html, README.md, preview.png}
  *         release/darkex-404-v<version>.zip
  */
-const VERSION = '1.1.2';
+const VERSION = '1.1.3';
 
 const bundle = await Bun.build({
   entrypoints: ['./release/engine.js'],

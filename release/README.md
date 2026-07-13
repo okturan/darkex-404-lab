@@ -25,14 +25,6 @@ would break on deep 404s like `/account/settings/oops`. If your assets live
 elsewhere, change `logo.src` in the config block and the favicon `<link>` in
 the head together.
 
-| Host | How |
-| --- | --- |
-| nginx | `error_page 404 /404.html;` (+ an exact `location = /404.html` if needed) |
-| Cloudflare Pages / Netlify | place it as `404.html` at the publish root |
-| S3 / CloudFront | set it as the 404 error document |
-| Vercel | `404.html` at the project root (static) |
-| Apache | `ErrorDocument 404 /404.html` |
-
 The copy is plain DOM, so search engines and no-JS visitors still get a real
 404 page; the particles are enhancement on top.
 
