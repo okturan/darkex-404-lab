@@ -170,7 +170,7 @@
         },
 
         logo: {
-          src: '/logo.svg', // where the mark lives. Absolute on purpose: error pages render under the *failing* URL, so a relative path would break on deep 404s. Point it at your asset host if the file lives elsewhere
+          src: '/logo.svg', // where the mark lives in production. Absolute on purpose: error pages render under the *failing* URL, so a relative path would break on deep 404s. If this path misses (e.g. a local preview served from a subfolder), the engine falls back to the logo.svg sitting beside this page
           rasterWidth: 480, // sampling resolution. Grain count grows with its square: 480 ≈ 45k grains. Raise for denser line-work, lower for a lighter page
           scatter: { x: 4.5, y: 2.8, z: 1.6 }, // how wide the pre-assembly cloud starts; bigger = grander entrance
         },

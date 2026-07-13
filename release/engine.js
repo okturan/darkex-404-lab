@@ -14,10 +14,14 @@ import { createParticles } from '../lib/assembly.js';
 
 const config = window.DARKEX404;
 
-// The mark is fetched as text and re-issued as a data URI: sampling then
-// stays origin-clean even if logo.src ever points at a CDN, and the SVG is
-// read exactly once.
-const svg = await (await fetch(config.logo.src)).text();
+// Resolution order: the configured path first — that's how production error
+// routes find the mark, since error pages render under the *failing* URL —
+// then the file sitting beside the page, which is how local previews served
+// from a subfolder find it. The text is re-issued as a data URI so sampling
+// stays origin-clean even if logo.src ever points at a CDN.
+const configured = await fetch(config.logo.src);
+const source = configured.ok ? configured : await fetch(new URL('logo.svg', location.href));
+const svg = await source.text();
 const logoUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 
 // Colors: the stylesheet is the single source of truth.
