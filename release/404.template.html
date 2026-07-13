@@ -8,23 +8,20 @@
     grains assemble from a drifting cloud into the logo; the visitor's cursor
     carries a force field that scatters them into embers, and every grain
     springs back home. three.js r185 — WebGPU where available, WebGL2
-    otherwise, one code path. Ship it with logo.svg beside it at the site
-    root; double-clicking the file also works and draws the built-in copy
-    of the mark (browsers block fetch on file://, so the external file is
-    only readable when served).
+    otherwise, one code path. This file is self-sufficient: it works from
+    any server, any path depth, or straight off disk — nothing to upload
+    beside it.
 
     EVERYTHING YOU'D WANT TO EDIT IS IN THE TOP HALF OF THIS FILE:
 
       1. COPY    → inside <main class="content">          (plain HTML)
       2. COLORS  → the :root variables in <style>          (plain CSS)
-      3. LOGO    → the logo.svg file next to this page.
-                   Replace the file with any SVG. Grains are sampled from
-                   its LIGHT pixels (line-work), so keep artwork
-                   light-on-transparent/dark. The favicon <link> below and
-                   the sampler (logo.src in the config) both point at it.
-                   The <template id="logo-source"> further down is the
-                   built-in copy used for off-disk previews — keep it in
-                   sync if you swap the brand.
+      3. LOGO    → the SVG inside <template id="logo-source">.
+                   Swap in any SVG. Grains are sampled from its LIGHT
+                   pixels (line-work), so keep artwork light-on-dark.
+                   The favicon derives from it automatically. Prefer a
+                   hosted file (CDN, asset pipeline)? Set logo.src in the
+                   config instead — a URL there wins over the embed.
       4. MOTION  → the window.DARKEX404 block               (plain JS)
                    Every value is commented with what raising it does.
 
@@ -42,9 +39,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#09090a" />
     <title>404 · Darkex</title>
-    <!-- Absolute path on purpose: error pages render under the URL that
-         failed, so "./logo.svg" would resolve into that dead path. -->
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <!-- No favicon link here: the engine derives it from the logo below. -->
 
     <style>
       /* ——— 2. COLORS — the only place color exists. The particle engine
@@ -151,10 +146,10 @@
     </style>
   </head>
   <body>
-    <!-- BUILT-IN MARK — used only when this file is opened straight off
-         disk (browsers block fetch on file://, so logo.svg is unreadable
-         there). Served over HTTP, the logo.svg file always wins. If you
-         swap the brand, update both so disk previews match. -->
+    <!-- ——— 3. LOGO — the mark itself. Swap this SVG for any light-on-dark
+             artwork; it is rasterized once into grains and becomes the
+             favicon. (Set logo.src in the config to use a hosted file
+             instead — the URL wins over this embed.) ——— -->
     <template id="logo-source">
       <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M57.6699 44.4808L47.8294 54.326H11.7477L1.90723 44.4808L10.1076 10.0223L18.4465 1.81787H41.1306L49.4695 10.0223L57.6699 44.4808Z" fill="#09090A"/>
@@ -187,7 +182,7 @@
         },
 
         logo: {
-          src: '/logo.svg', // where the mark lives in production. Absolute on purpose: error pages render under the *failing* URL, so a relative path would break on deep 404s. If this path misses (e.g. a local preview served from a subfolder), the engine falls back to the logo.svg sitting beside this page
+          src: '', // optional: URL of a hosted SVG to use instead of the embedded one — e.g. '/logo.svg' or a CDN URL (absolute URLs are safest: error pages render under the failing URL, and cross-origin hosts must allow CORS reads). Empty = the SVG embedded above
           rasterWidth: 480, // sampling resolution. Grain count grows with its square: 480 ≈ 45k grains. Raise for denser line-work, lower for a lighter page
           scatter: { x: 4.5, y: 2.8, z: 1.6 }, // how wide the pre-assembly cloud starts; bigger = grander entrance
         },

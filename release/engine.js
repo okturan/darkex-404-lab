@@ -2,9 +2,10 @@
  * The release engine: everything below the fold of 404.html.
  *
  * It reads the page it lives in — copy stays untouched DOM, colors come
- * from the :root CSS variables, the mark comes from the SVG file at
- * config.logo.src, and the feel comes from window.DARKEX404. Those four
- * surfaces are the whole public API; this bundle never needs editing.
+ * from the :root CSS variables, the mark comes from the embedded SVG
+ * template (or the URL in config.logo.src, when set), and the feel comes
+ * from window.DARKEX404. Those four surfaces are the whole public API;
+ * this bundle never needs editing.
  */
 import { Clock, Color } from 'three/webgpu';
 import { sampleImage, scatter } from '../lib/points.js';
@@ -14,24 +15,20 @@ import { createParticles } from '../lib/assembly.js';
 
 const config = window.DARKEX404;
 
-// Where the mark comes from, in order: the built-in copy when the page is
-// opened straight off disk (browsers block fetch on file://, so logo.svg is
-// unreadable there); otherwise the configured path — that's how production
-// error routes find it, since error pages render under the *failing* URL —
-// and finally the logo.svg beside the page, which is how local previews
-// served from a subfolder find it. The text is re-issued as a data URI so
-// sampling stays origin-clean even if logo.src ever points at a CDN.
-async function loadMark() {
-  if (location.protocol === 'file:') {
-    const builtIn = document.querySelector('#logo-source').content.firstElementChild;
-    return new XMLSerializer().serializeToString(builtIn);
-  }
-  const configured = await fetch(config.logo.src);
-  const found = configured.ok ? configured : await fetch(new URL('logo.svg', location.href));
-  return found.text();
-}
+// The mark: the SVG embedded in the page, unless logo.src points at a
+// hosted copy — then the URL wins. Either way it is re-issued as a data URI,
+// which keeps sampling origin-clean (even for CDN sources) and lets the
+// favicon derive from the exact artwork in use.
+const embedded = () =>
+  new XMLSerializer().serializeToString(document.querySelector('#logo-source').content.firstElementChild);
+const svg = config.logo.src ? await (await fetch(config.logo.src)).text() : embedded();
+const logoUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 
-const logoUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(await loadMark())}`;
+const icon = document.createElement('link');
+icon.rel = 'icon';
+icon.type = 'image/svg+xml';
+icon.href = logoUrl;
+document.head.append(icon);
 
 // Colors: the stylesheet is the single source of truth.
 const css = getComputedStyle(document.documentElement);
