@@ -8,9 +8,10 @@
     grains assemble from a drifting cloud into the logo; the visitor's cursor
     carries a force field that scatters them into embers, and every grain
     springs back home. three.js r185 — WebGPU where available, WebGL2
-    otherwise, one code path. Serve it over HTTP with logo.svg beside it at
-    the site root (fetch is blocked on file://, so opening straight off disk
-    won't draw).
+    otherwise, one code path. Ship it with logo.svg beside it at the site
+    root; double-clicking the file also works and draws the built-in copy
+    of the mark (browsers block fetch on file://, so the external file is
+    only readable when served).
 
     EVERYTHING YOU'D WANT TO EDIT IS IN THE TOP HALF OF THIS FILE:
 
@@ -21,6 +22,9 @@
                    its LIGHT pixels (line-work), so keep artwork
                    light-on-transparent/dark. The favicon <link> below and
                    the sampler (logo.src in the config) both point at it.
+                   The <template id="logo-source"> further down is the
+                   built-in copy used for off-disk previews — keep it in
+                   sync if you swap the brand.
       4. MOTION  → the window.DARKEX404 block               (plain JS)
                    Every value is commented with what raising it does.
 
@@ -101,7 +105,7 @@
       .eyebrow {
         margin: 0;
         color: var(--brand);
-        font-size: 0.975rem; /* 0.8125rem + 20% */
+        font-size: 1.125rem;
         font-weight: 650;
         letter-spacing: 0.35em;
         text-indent: 0.35em; /* recenters tracked uppercase */
@@ -147,6 +151,19 @@
     </style>
   </head>
   <body>
+    <!-- BUILT-IN MARK — used only when this file is opened straight off
+         disk (browsers block fetch on file://, so logo.svg is unreadable
+         there). Served over HTTP, the logo.svg file always wins. If you
+         swap the brand, update both so disk previews match. -->
+    <template id="logo-source">
+      <svg width="60" height="56" viewBox="0 0 60 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M57.6699 44.4808L47.8294 54.326H11.7477L1.90723 44.4808L10.1076 10.0223L18.4465 1.81787H41.1306L49.4695 10.0223L57.6699 44.4808Z" fill="#09090A"/>
+        <path d="M41.8021 0.178467L50.9554 9.18428L59.477 44.992L48.5088 55.9655H11.0686L0.100586 44.992L8.62203 9.18428L17.7755 0.178467H41.8021ZM11.5935 10.8603L3.7142 43.9694L12.4271 52.6866H47.1505L55.8632 43.9694L47.9839 10.8603L40.4596 3.4573H19.1178L11.5935 10.8603Z" fill="#FAFBFC"/>
+        <path d="M15.0273 36.2764H18.3075L24.8678 29.7129H15.0273V36.2764Z" fill="#FAFBFC"/>
+        <path d="M44.5487 29.7132V37.9176L34.7082 47.7629H29.8026L29.788 41.1994H33.0517L33.0681 39.5585H26.5078V37.9176H31.4281V36.2767L28.1479 32.995V21.5088H31.4281V26.4314L34.7082 29.7132H44.5487Z" fill="#FAFBFC"/>
+      </svg>
+    </template>
+
     <div id="scene" aria-hidden="true"></div>
 
     <!-- ——— 1. COPY — edit freely; it renders even before (or without) JS. ——— -->

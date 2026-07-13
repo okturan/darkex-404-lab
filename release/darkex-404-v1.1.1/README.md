@@ -7,10 +7,12 @@ drifting cloud on load, scatters into embers under the visitor's cursor,
 and springs back home. No dependencies and no build step; any static server
 will do.
 
-To preview locally, serve this folder and open `/404.html` — for example
-`python3 -m http.server` → <http://localhost:8000/404.html>. (Opening the
-file straight off disk won't draw: browsers block `fetch` on `file://`, and
-the page fetches the logo.)
+To preview locally, serve any folder that contains these files and open the
+page — for example `python3 -m http.server` → <http://localhost:8000/404.html>.
+The engine looks for the logo at `logo.src` (`/logo.svg`) first and falls
+back to the `logo.svg` sitting beside the page, so previews work from nested
+folders too. (Opening the file straight off disk won't draw: browsers block
+`fetch` on `file://`.)
 
 ## Ship it
 

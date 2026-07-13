@@ -14,15 +14,24 @@ import { createParticles } from '../lib/assembly.js';
 
 const config = window.DARKEX404;
 
-// Resolution order: the configured path first — that's how production error
-// routes find the mark, since error pages render under the *failing* URL —
-// then the file sitting beside the page, which is how local previews served
-// from a subfolder find it. The text is re-issued as a data URI so sampling
-// stays origin-clean even if logo.src ever points at a CDN.
-const configured = await fetch(config.logo.src);
-const source = configured.ok ? configured : await fetch(new URL('logo.svg', location.href));
-const svg = await source.text();
-const logoUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+// Where the mark comes from, in order: the built-in copy when the page is
+// opened straight off disk (browsers block fetch on file://, so logo.svg is
+// unreadable there); otherwise the configured path — that's how production
+// error routes find it, since error pages render under the *failing* URL —
+// and finally the logo.svg beside the page, which is how local previews
+// served from a subfolder find it. The text is re-issued as a data URI so
+// sampling stays origin-clean even if logo.src ever points at a CDN.
+async function loadMark() {
+  if (location.protocol === 'file:') {
+    const builtIn = document.querySelector('#logo-source').content.firstElementChild;
+    return new XMLSerializer().serializeToString(builtIn);
+  }
+  const configured = await fetch(config.logo.src);
+  const found = configured.ok ? configured : await fetch(new URL('logo.svg', location.href));
+  return found.text();
+}
+
+const logoUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(await loadMark())}`;
 
 // Colors: the stylesheet is the single source of truth.
 const css = getComputedStyle(document.documentElement);
