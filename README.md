@@ -3,8 +3,19 @@
 **Live: <https://okturan.github.io/darkex-404-lab/>**
 
 Five takes on a 404 page for [darkex.com](https://www.darkex.com/en), each one
-a GPU particle system built from the Darkex mark and the error itself. All
-five run the same architecture: grain state in storage buffers, one TSL
+a GPU particle system built from the Darkex mark and the error itself.
+
+## Five live studies
+
+Each thumbnail is a frame captured from its corresponding demo in this
+repository. The static images prove the authored visual states; follow the
+live links to verify motion, cursor response, and recovery behavior.
+
+| [Assembly](https://okturan.github.io/darkex-404-lab/demos/ember/) | [Inevitable](https://okturan.github.io/darkex-404-lab/demos/morph/) | [Negative Space](https://okturan.github.io/darkex-404-lab/demos/hollow/) | [Crumble](https://okturan.github.io/darkex-404-lab/demos/sandfall/) | [Event Horizon](https://okturan.github.io/darkex-404-lab/demos/horizon/) |
+| :---: | :---: | :---: | :---: | :---: |
+| [![Assembly demo: the Darkex mark assembled from white grains](assets/thumbs/ember.png)](https://okturan.github.io/darkex-404-lab/demos/ember/) | [![Inevitable demo: grains moving between the Darkex mark and 404](assets/thumbs/morph.png)](https://okturan.github.io/darkex-404-lab/demos/morph/) | [![Negative Space demo: 404 carved out of a field of dust](assets/thumbs/hollow.png)](https://okturan.github.io/darkex-404-lab/demos/hollow/) | [![Crumble demo: the Darkex mark falling into sand](assets/thumbs/sandfall.png)](https://okturan.github.io/darkex-404-lab/demos/sandfall/) | [![Event Horizon demo: an orange accretion disk around a dark void](assets/thumbs/horizon.png)](https://okturan.github.io/darkex-404-lab/demos/horizon/) |
+
+All five run the same architecture: grain state in storage buffers, one TSL
 compute pass per frame, an additive sprite population, and a pointer
 projected onto the grains' plane. three.js r185, `three/webgpu` +
 `three/tsl`; WebGPU where available, transparent WebGL2 fallback otherwise.
@@ -19,14 +30,19 @@ projected onto the grains' plane. three.js r185, `three/webgpu` +
 
 ## Release (the production artifact)
 
-Assembly is the production pick. `bun run release` emits
-`release/darkex-404-v1.0.0.zip` — a single self-contained `404.html`
-(plus handoff README and preview) that needs **no build tools and no Bun**
-to use or edit. Copy lives in HTML, colors live in CSS variables the engine
-reads at boot, the logo lives in a `<template>` (swap the SVG, favicon
-follows), and the feel lives in one commented `window.DARKEX404` block.
-The template is `release/404.template.html`; the engine source is
-`release/engine.js`.
+Assembly is the production pick. `bun run release` regenerates the two
+archives published in [v1.4.0](https://github.com/okturan/darkex-404-lab/releases/tag/v1.4.0):
+
+- `darkex-404-v1.4.0.zip` — the full page as a self-contained `404.html`,
+  plus the handoff README and reference `logo.svg`.
+- `darkex-mark-v1.4.0.zip` — the interactive mark without page copy or CTA,
+  plus its own README and reference `logo.svg`.
+
+Neither artifact needs build tools or Bun to use or edit. Copy lives in
+HTML, colors live in CSS variables the engine reads at boot, the logo lives
+in a `<template>` (swap the SVG, favicon follows), and the feel lives in one
+commented `window.DARKEX404` block. The full-page template is
+`release/404.template.html`; the engine source is `release/engine.js`.
 
 ## Run
 
