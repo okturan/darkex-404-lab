@@ -5,6 +5,25 @@
 Five takes on a 404 page for [darkex.com](https://www.darkex.com/en), each one
 a GPU particle system built from the Darkex mark and the error itself.
 
+## Actual motion proof
+
+[![Inevitable live study moving between the Darkex mark and 404](assets/motion/inevitable-live.gif)](https://okturan.github.io/darkex-404-lab/demos/morph/)
+
+This is a four-second capture of the public **Inevitable** study running in
+Chrome, not a designed mockup or frame interpolation. It shows one simulated
+grain population moving from the mark to `404` and back. The exact capture
+conditions and encoding boundary are recorded in
+[`assets/motion/README.md`](assets/motion/README.md); click the recording to
+interact with the current deployment.
+
+The production Assembly artifact honors `prefers-reduced-motion`: it starts
+fully assembled, removes idle wander, and leaves the cursor field inert. The
+five experimental studies remain motion-first; their static thumbnails below
+are the inspection path that does not require opening an animation. Rendering
+uses WebGPU where available and the same TSL graph through a transparent
+WebGL2 fallback otherwise. Page copy remains plain DOM if rendering is
+unavailable.
+
 ## Five live studies
 
 Each thumbnail is a frame captured from its corresponding demo in this
