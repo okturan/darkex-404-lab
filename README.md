@@ -110,6 +110,13 @@ Any single demo works standalone: serve its built directory (or
 `dist/404.html`) with a 404 status — nginx `error_page 404`, Cloudflare
 Pages / Netlify `404.html`, or an S3 error document.
 
+## Security
+
+Report injection, configurable-markup, dependency, or release-integrity
+vulnerabilities through [GitHub private vulnerability reporting](./SECURITY.md).
+Test against the local server or your own deployment, not third-party Darkex
+properties.
+
 ## GitHub Pages
 
 The site deploys from `main:/docs` (Settings → Pages). `bun run build`
