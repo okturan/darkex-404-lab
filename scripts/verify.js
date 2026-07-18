@@ -175,6 +175,24 @@ async function checkPng(path) {
   }
 }
 
+async function checkGif(path, expectedWidth, expectedHeight) {
+  const info = await fileInfo(repoRoot, path);
+  if (!info) return;
+  if (info.size > 1_000_000) fail(`${path} is ${info.size} bytes; expected at most 1000000`);
+  const bytes = new Uint8Array(await Bun.file(join(repoRoot, path)).arrayBuffer());
+  const signature = new TextDecoder().decode(bytes.slice(0, 6));
+  if (!['GIF87a', 'GIF89a'].includes(signature)) {
+    fail(`${path} is not a valid GIF`);
+    return;
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const width = view.getUint16(6, true);
+  const height = view.getUint16(8, true);
+  if (width !== expectedWidth || height !== expectedHeight) {
+    fail(`${path} is ${width}x${height}; expected ${expectedWidth}x${expectedHeight}`);
+  }
+}
+
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -202,6 +220,8 @@ async function checkSource() {
     sourcePages.push(`demos/${demo.slug}/index.html`);
     await checkPng(demo.thumb);
   }
+  await checkGif('assets/motion/inevitable-live.gif', 800, 450);
+  await fileInfo(repoRoot, 'assets/motion/README.md');
   sourcePages.push('release/404.template.html', 'release/mark.template.html');
   for (const page of sourcePages) await checkHtml(repoRoot, page);
 
@@ -234,6 +254,24 @@ async function checkSource() {
   }
 
   const readme = await readText(repoRoot, 'README.md');
+  const motionProof = '[![Inevitable live study moving between the Darkex mark and 404](assets/motion/inevitable-live.gif)](https://okturan.github.io/darkex-404-lab/demos/morph/)';
+  if (!readme.includes(motionProof)) fail('README.md does not link the motion proof directly to the live Inevitable study');
+  if (!readme.includes('prefers-reduced-motion') || !readme.includes('WebGL2 fallback')) {
+    fail('README.md does not document the production reduced-motion and rendering fallback boundaries');
+  }
+  const motionProvenance = await readText(repoRoot, 'assets/motion/README.md');
+  if (!motionProvenance.includes(demos.find(({ slug }) => slug === 'morph').live) || !motionProvenance.includes('40 real page screenshots')) {
+    fail('motion proof provenance does not identify the live source and captured-frame boundary');
+  }
+  const releaseBoot = await readText(repoRoot, 'release/boot.js');
+  for (const contract of [
+    "matchMedia('(prefers-reduced-motion: reduce)').matches",
+    'still ? mark.homes.slice() : scatter',
+    'wanderStrength: 0',
+    'if (!still) pointer.update',
+  ]) {
+    if (!releaseBoot.includes(contract)) fail(`release/boot.js is missing reduced-motion contract ${JSON.stringify(contract)}`);
+  }
   for (const demo of demos) {
     const pattern = new RegExp(
       `\\[!\\[([^\\]]+)\\]\\(${escapeRegex(demo.thumb)}\\)\\]\\(${escapeRegex(demo.live)}\\)`,
