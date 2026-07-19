@@ -1,0 +1,2 @@
+# Bundled self-contained releases contain generated template-literal whitespace.
+release/**/*.html -whitespace
